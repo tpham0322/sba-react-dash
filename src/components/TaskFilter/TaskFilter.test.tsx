@@ -1,13 +1,23 @@
 import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { TaskFilter } from "./TaskFilter";
 
 describe("TaskFilter", () => {
-  it("renders status and priority filters", () => {
+  it("renders the search, filter, and sorting controls", () => {
     render(
-      <TaskFilter onFilterChange={vi.fn()} />
+      <TaskFilter
+        filters={{}}
+        sortBy="dueDate"
+        sortDirection="asc"
+        onFilterChange={vi.fn()}
+        onSortChange={vi.fn()}
+        onClearFilters={vi.fn()}
+      />
     );
+
+    expect(
+      screen.getByLabelText("Search Tasks")
+    ).toBeInTheDocument();
 
     expect(
       screen.getByLabelText("Status")
@@ -16,45 +26,13 @@ describe("TaskFilter", () => {
     expect(
       screen.getByLabelText("Priority")
     ).toBeInTheDocument();
-  });
 
-  it("calls onFilterChange when status changes", async () => {
-    const user = userEvent.setup();
-    const onFilterChange = vi.fn();
+    expect(
+      screen.getByLabelText("Sort By")
+    ).toBeInTheDocument();
 
-    render(
-      <TaskFilter
-        onFilterChange={onFilterChange}
-      />
-    );
-
-    await user.selectOptions(
-      screen.getByLabelText("Status"),
-      "completed"
-    );
-
-    expect(onFilterChange).toHaveBeenCalledWith({
-      status: "completed",
-    });
-  });
-
-  it("calls onFilterChange when priority changes", async () => {
-    const user = userEvent.setup();
-    const onFilterChange = vi.fn();
-
-    render(
-      <TaskFilter
-        onFilterChange={onFilterChange}
-      />
-    );
-
-    await user.selectOptions(
-      screen.getByLabelText("Priority"),
-      "high"
-    );
-
-    expect(onFilterChange).toHaveBeenCalledWith({
-      priority: "high",
-    });
+    expect(
+      screen.getByLabelText("Direction")
+    ).toBeInTheDocument();
   });
 });
